@@ -7,7 +7,7 @@ const StyledNavbar = styled.nav`
   padding: 0 20px;
   height: var(--nav-height);
   background-color: var(--nav);
-  box-shadow: 0 2px 8px var(--shadow);
+  border-bottom: 1px solid var(--shadow);
   & * {
     display: flex;
     align-items: center;
@@ -20,7 +20,7 @@ const StyledNavbar = styled.nav`
     li {
       display: flex;
       align-items: center;
-      margin: 0 10px;
+      margin-left: 20px;
     }
   }
 `;

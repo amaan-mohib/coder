@@ -1,9 +1,17 @@
 import styled from "styled-components";
-import { ChartBar, FileUpload, Logout, User } from "tabler-icons-react";
+import {
+  Braces,
+  ChartBar,
+  FileUpload,
+  LayoutDashboard,
+  Logout,
+  User,
+} from "tabler-icons-react";
 import { useAuth } from "../contexts/AuthContext";
 import LinkComp from "./Link";
 
 const StyledDiv = styled.div`
+  z-index: 1000;
   display: flex;
   flex-direction: column;
   position: absolute;
@@ -33,22 +41,33 @@ const StyledDiv = styled.div`
 const FlyoutMenu = ({ setShow }) => {
   const { user, logout } = useAuth();
   return (
-    <StyledDiv>
+    <StyledDiv
+      onClick={() => {
+        setShow(false);
+      }}>
       <LinkComp href={`/${user.username}`}>
         <User className="mr" />
         <h2>{user.name}</h2>
       </LinkComp>
-
       <LinkComp href="/submissions">
         <FileUpload className="mr" /> Submissions
       </LinkComp>
       <LinkComp href="/progress">
         <ChartBar className="mr" /> Progress
       </LinkComp>
+      <LinkComp href="/contribute">
+        <Braces className="mr" />
+        Contribute
+      </LinkComp>
+      {user.admin && (
+        <LinkComp href="/dashboard">
+          <LayoutDashboard className="mr" />
+          Approve
+        </LinkComp>
+      )}
       <div
         onClick={() => {
           logout();
-          setShow(false);
         }}>
         <Logout className="mr" /> Log Out
       </div>

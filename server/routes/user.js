@@ -3,7 +3,7 @@ const router = express.Router();
 const bcrypt = require("bcrypt");
 const User = require("../models/user");
 const jwt = require("jsonwebtoken");
-const verifyAuth = require("../middlewares/auth");
+const { verifyAuth } = require("../middlewares/auth");
 
 router.get("/me", verifyAuth, (req, res) => {
   res.send(req.user);
@@ -27,7 +27,12 @@ router.post("/register", async (req, res) => {
 
 router.post("/login", async (req, res) => {
   const user = await User.findOne({
-    email: req.body.email,
+    $or: [
+      {
+        email: req.body.email,
+      },
+      { username: req.body.email },
+    ],
   });
   if (!user) {
     return res.status(404).send("Invalid login");

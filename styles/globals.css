@@ -3,8 +3,8 @@
   --background: #fff;
   --primary: #000;
   --secondary: #373737;
-  --nav: #e3e3e3;
-  --shadow: rgba(133, 133, 133, 0.7);
+  --nav: #f2f2f2;
+  --shadow: rgba(170, 170, 170, 0.7);
   --secondary-text: rgb(100, 100, 100);
   --nav-height: 50px;
 }
@@ -36,7 +36,9 @@ main {
   min-height: calc(100vh - var(--nav-height));
 }
 
-input {
+input,
+textarea,
+select {
   border: 1px solid #cfd8dc;
   border-radius: 3px;
   padding: 8.85px 13px;
@@ -45,10 +47,28 @@ input {
   transition: 0.4s all;
 }
 
-input:hover {
+input:hover,
+textarea:hover {
   border-color: #263238;
 }
-input:focus {
+input:focus,
+textarea:focus {
   outline: none !important;
   box-shadow: 0 0 0 1px var(--primary);
+}
+hr {
+  border: none;
+  height: 1px;
+  background-color: var(--shadow);
+  margin: 5px 0;
+}
+
+code,
+pre {
+  font-family: monospace !important;
+}
+
+code {
+  background-color: #f5f5f5;
+  padding: 10px;
 }

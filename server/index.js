@@ -9,8 +9,12 @@ app.use(express.json());
 
 mongoose.connect(process.env.MONGO_URI);
 const users = require("./routes/user");
+const problems = require("./routes/problem");
+const submissions = require("./routes/submission");
 
 app.use("/user", users);
+app.use("/problems", problems);
+app.use("/submissions", submissions);
 app.get("/", (req, res) => {
   res.send("Server is up and running");
 });
