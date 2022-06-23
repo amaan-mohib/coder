@@ -1,7 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const Problem = require("../models/problem");
-const { verifyAuth } = require("../middlewares/auth");
+const Submission = require("../models/submission");
+const { verifyAuth, getUser } = require("../middlewares/auth");
 
 router.post("/submit", verifyAuth, async (req, res) => {
   let count = 1;
@@ -27,14 +28,46 @@ router.post("/submit", verifyAuth, async (req, res) => {
   }
 });
 
-router.get("/all", async (req, res) => {
+router.get("/all", getUser, async (req, res) => {
   try {
+    let submissions = [];
+    if (req.user) {
+      submissions = await Submission.aggregate([
+        {
+          $match: { "submitted_by.username": req.user.username },
+        },
+        {
+          $sort: { timestamp: -1 },
+        },
+        {
+          $group: {
+            _id: "$titleSlug",
+            stats: { $addToSet: "$status_id" },
+          },
+        },
+      ]);
+    }
     const problems = await Problem.find(
       { approved: true },
       { title: 1, titleSlug: 1, difficulty: 1, number: 1, tags: 1 }
     );
 
-    res.status(200).send(problems);
+    const result =
+      submissions.length > 0
+        ? problems.map((problem) => {
+            const sub = submissions.find((s) => problem.titleSlug === s._id);
+            const status = sub
+              ? sub.stats.includes(3)
+                ? "solved"
+                : "attempted"
+              : "todo";
+            return {
+              ...problem._doc,
+              status,
+            };
+          })
+        : problems;
+    res.status(200).send(result);
   } catch (err) {
     console.error(err);
     res.status(500).send({ status: "error", error: err });

@@ -166,7 +166,11 @@ const StyledDiv = styled.div`
       font-weight: 500;
     }
     pre {
+      p {
+        font-size: small;
+      }
       display: flex;
+      flex-direction: column;
     }
     pre,
     code {
@@ -212,27 +216,42 @@ const Submission = ({ submissionList, submitting, submissionResult, name }) => {
                 {submissionResult.status.description}
               </span>
             </span>
-            {submissionResult.time ? (
+            {submissionResult.time && (
               <span className="info">
                 {"Took "}
-                <span className="big">{`${submissionResult.time} ms`}</span>
+                <span className="big">
+                  {submissionResult.time
+                    ? `${submissionResult.time} ms`
+                    : "N/A"}
+                </span>
                 {", with "}
-                <span className="big">{`${submissionResult.memory} KB`}</span>
+                <span className="big">
+                  {submissionResult.memory
+                    ? `${submissionResult.memory} KB`
+                    : "N/A"}
+                </span>
                 {" in "}
                 <span>{`${submissionResult.language.name}`}</span>
                 {` for ${name}`}
               </span>
-            ) : (
-              <pre>
-                <code>{decodeBase64(submissionResult.compile_output)}</code>
-              </pre>
             )}
+            <pre>
+              {submissionResult.compile_output && (
+                <code>{decodeBase64(submissionResult.compile_output)}</code>
+              )}
+              {submissionResult.message && (
+                <p>{decodeBase64(submissionResult.message)}</p>
+              )}
+              {submissionResult.stderr && (
+                <code>{decodeBase64(submissionResult.stderr)}</code>
+              )}
+            </pre>
             <hr />
           </div>
         )
       )}
       <div>
-        {submissionList.length > 0 && (
+        {submissionList.length > 0 ? (
           <table>
             <thead>
               <tr>
@@ -249,7 +268,7 @@ const Submission = ({ submissionList, submitting, submissionResult, name }) => {
                   <td>{`${new Date(sub.timestamp).toLocaleString()}`}</td>
                   <td>
                     <LinkComp
-                      href={`/`}
+                      href={`/submissions/${sub.sub_id}`}
                       style={{
                         color:
                           sub.status.description === "Accepted"
@@ -259,13 +278,15 @@ const Submission = ({ submissionList, submitting, submissionResult, name }) => {
                       {sub.status.description}
                     </LinkComp>
                   </td>
-                  <td>{`${sub.time} ms`}</td>
-                  <td>{`${sub.memory} KB`}</td>
+                  <td>{sub.time ? `${sub.time} ms` : "N/A"}</td>
+                  <td>{sub.memory ? `${sub.memory} KB` : "N/A"}</td>
                   <td>{sub.language.name.replace(/\([^()]*\)/g, "").trim()}</td>
                 </tr>
               ))}
             </tbody>
           </table>
+        ) : (
+          <p>No submissions till now</p>
         )}
       </div>
     </div>
@@ -375,7 +396,7 @@ const Problem = () => {
       })
       .then((res) => {
         setRunning(false);
-        setSubmissionResult(res.data);
+
         console.log(res.data);
         if (type === 1) {
           setSubmittedResult(res.data);
@@ -394,6 +415,8 @@ const Problem = () => {
               setSubmitting(false);
               console.error(err);
             });
+        } else {
+          setSubmissionResult(res.data);
         }
       })
       .catch((err) => {
@@ -472,7 +495,7 @@ const Problem = () => {
                 <span className="test-window">
                   <div className="test-title">
                     <p className="time">
-                      {running
+                      {running && !submitting
                         ? "—"
                         : submissionResult?.time
                         ? `${submissionResult?.time} ms`
@@ -484,7 +507,7 @@ const Problem = () => {
                       onClick={() => !running && setTesting(false)}
                     />
                   </div>
-                  {running ? (
+                  {running && !submitting ? (
                     <Loader size={24} />
                   ) : submissionResult ? (
                     <pre>
@@ -494,6 +517,14 @@ const Problem = () => {
                           <code>
                             {decodeBase64(submissionResult?.compile_output)}
                           </code>
+                        </>
+                      )}
+                      {submissionResult.message && (
+                        <p>{decodeBase64(submissionResult.message)}</p>
+                      )}
+                      {submissionResult?.stderr && (
+                        <>
+                          <code>{decodeBase64(submissionResult?.stderr)}</code>
                         </>
                       )}
                       {submissionResult?.stdout && (

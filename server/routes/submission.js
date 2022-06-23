@@ -23,6 +23,29 @@ router.post("/", verifyAuth, async (req, res) => {
   }
 });
 
+router.get("/all", verifyAuth, async (req, res) => {
+  try {
+    const submissions = await Submission.find(
+      { "submitted_by.username": req.user.username },
+      {
+        sub_id: 1,
+        time: 1,
+        memory: 1,
+        status: 1,
+        language: 1,
+        timestamp: 1,
+        title: 1,
+        titleSlug: 1,
+        token: 1,
+      }
+    ).sort({ timestamp: -1 });
+    res.status(200).send(submissions);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ status: "error", error: err });
+  }
+});
+
 router.get("/:slug", verifyAuth, async (req, res) => {
   try {
     const slug = req.params.slug;
@@ -37,6 +60,32 @@ router.get("/:slug", verifyAuth, async (req, res) => {
     ).sort({ timestamp: -1 });
 
     res.status(200).send(submissions);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send({ status: "error", error: err });
+  }
+});
+
+router.get("/detail/:sid", async (req, res) => {
+  try {
+    const sid = req.params.sid;
+    const submission = await Submission.findOne(
+      { sub_id: sid },
+      {
+        sub_id: 1,
+        time: 1,
+        memory: 1,
+        status: 1,
+        language: 1,
+        timestamp: 1,
+        token: 1,
+        code: 1,
+        title: 1,
+        titleSlug: 1,
+      }
+    );
+
+    res.status(200).send(submission);
   } catch (err) {
     console.error(err);
     res.status(500).send({ status: "error", error: err });

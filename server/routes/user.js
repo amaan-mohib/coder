@@ -35,7 +35,7 @@ router.post("/login", async (req, res) => {
     ],
   });
   if (!user) {
-    return res.status(404).send("Invalid login");
+    return res.status(401).send("Invalid login");
   }
   const isPasswordValid = await bcrypt.compare(
     req.body.password,
@@ -53,7 +53,7 @@ router.post("/login", async (req, res) => {
     );
     res.status(200).json({ accessToken: token });
   } else {
-    res.status(404).send("Wrong email or password");
+    res.status(401).send("Wrong email or password");
   }
 });
 

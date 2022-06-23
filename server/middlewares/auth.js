@@ -19,7 +19,7 @@ const verifyAuth = (req, res, next) => {
 
 const getUser = (req, res, next) => {
   const authHeader = req.headers.authorization;
-  //   console.log(authHeader);
+  // console.log(authHeader);
   if (authHeader) {
     const token = authHeader.split(" ")[1];
     jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
@@ -29,6 +29,9 @@ const getUser = (req, res, next) => {
       req.user = user;
       next();
     });
+  } else {
+    req.user = null;
+    next();
   }
 };
 
