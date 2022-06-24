@@ -9,6 +9,7 @@ const StyledButton = styled.button`
   border-radius: 3px;
   color: white;
   text-transform: capitalize;
+  display: flex;
 
   &:hover {
     filter: brightness(90%) saturate(120%);

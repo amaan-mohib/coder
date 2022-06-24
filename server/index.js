@@ -13,12 +13,16 @@ const problems = require("./routes/problem");
 const submissions = require("./routes/submission");
 const progress = require("./routes/progress");
 const userinfo = require("./routes/userinfo");
+const discussion = require("./routes/discuss");
+const comment = require("./routes/comment");
 
 app.use("/user", users);
 app.use("/problems", problems);
 app.use("/submissions", submissions);
 app.use("/progress", progress);
 app.use("/userinfo", userinfo);
+app.use("/discussion", discussion);
+app.use("/comment", comment);
 app.get("/", (req, res) => {
   res.send("Server is up and running");
 });

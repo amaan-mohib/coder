@@ -6,7 +6,7 @@ const { verifyAuth } = require("../middlewares/auth");
 router.post("/", verifyAuth, async (req, res) => {
   let count = 1;
   const cnt = await Submission.countDocuments();
-  count = cnt + 1;
+  if (cnt) count = cnt + 1;
   try {
     const data = req.body;
     await Submission.create({

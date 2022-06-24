@@ -12,6 +12,7 @@ import LoadingScreen from "./LoadingScreen";
 import Loader from "../components/Loader";
 import { ChevronDown, Terminal2 } from "tabler-icons-react";
 import LinkComp from "../components/Link";
+import Discuss from "./Discuss";
 
 const StyledDiv = styled.div`
   display: flex;
@@ -449,7 +450,12 @@ const Problem = () => {
             <TabPanel>
               <Description problem={problem} />
             </TabPanel>
-            <TabPanel></TabPanel>
+            <TabPanel>
+              <Discuss
+                name={`${problem.number}. ${problem.title}`}
+                topic={problem.titleSlug}
+              />
+            </TabPanel>
             <TabPanel>
               <Submission
                 submissionList={submissionList}

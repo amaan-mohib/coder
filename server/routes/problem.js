@@ -7,7 +7,7 @@ const { verifyAuth, getUser } = require("../middlewares/auth");
 router.post("/submit", verifyAuth, async (req, res) => {
   let count = 1;
   const cnt = await Problem.countDocuments();
-  count = cnt + 1;
+  if (cnt) count = cnt + 1;
 
   try {
     let titleSlug = req.body.title.toLowerCase().split(" ").join("-");
