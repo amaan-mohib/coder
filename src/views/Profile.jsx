@@ -3,6 +3,7 @@ import styled from "styled-components";
 import LinkComp from "../components/Link";
 import SolvedStats from "../components/SolvedStats";
 import { useAuth } from "../contexts/AuthContext";
+import Helmet from "../HOC/Helmet";
 import api from "../utils/api";
 
 const StyledDiv = styled.div`
@@ -76,6 +77,7 @@ const Profile = () => {
   if (!user) return <div></div>;
   return (
     <main>
+      <Helmet title={user.name || user.username} />
       <StyledDiv>
         <div className="top">
           <div className="profile">
@@ -87,7 +89,7 @@ const Profile = () => {
         </div>
         <div className="profile subs">
           <div className="header">
-            <h3>Recent Submissions</h3>
+            <h3>Recent Accepted</h3>
             <LinkComp href="/submissions" className="date">
               View all &gt;
             </LinkComp>

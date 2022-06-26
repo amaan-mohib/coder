@@ -4,6 +4,7 @@ import styled from "styled-components";
 import Button from "../components/Button";
 import LinkComp from "../components/Link";
 import { useAuth } from "../contexts/AuthContext";
+import Helmet from "../HOC/Helmet";
 import api from "../utils/api";
 
 const StyledDiv = styled.div`
@@ -24,6 +25,9 @@ const StyledDiv = styled.div`
       text-align: center;
       color: var(--secondary-text);
     }
+  }
+  button {
+    justify-content: center;
   }
   .error {
     color: red;
@@ -70,12 +74,16 @@ const Register = () => {
             router.push("/");
           });
         })
-        .catch((err) => console.error(err));
+        .catch((err) => {
+          console.error(err);
+          setErrors({ ...reset, all: err.response.data });
+        });
     }
   };
 
   return (
     <main>
+      <Helmet title="Register" />
       <StyledDiv>
         <form onSubmit={onSubmit}>
           <input

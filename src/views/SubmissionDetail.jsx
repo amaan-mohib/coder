@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import styled from "styled-components";
 import LinkComp from "../components/Link";
 import Loader from "../components/Loader";
+import Helmet from "../HOC/Helmet";
 import api from "../utils/api";
 import LoadingScreen from "./LoadingScreen";
 
@@ -88,10 +89,11 @@ const SubmissionDetail = () => {
 
   return (
     <main>
+      <Helmet title={`${details?.title || "Loading"} - Submission Details`} />
       <StyledDiv>
         {details ? (
           <div>
-            <LinkComp href={`/${details.titleSlug}`}>
+            <LinkComp href={`/problems/${details.titleSlug}`}>
               <h2>{details.title}</h2>
             </LinkComp>
             <h3>Submission Detail</h3>

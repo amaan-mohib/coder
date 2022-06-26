@@ -5,6 +5,7 @@ import api from "../utils/api";
 import "react-markdown-editor-lite/lib/index.css";
 import Button from "../components/Button";
 import { useAuth } from "../contexts/AuthContext";
+import Helmet from "../HOC/Helmet";
 
 const StyledDiv = styled.div`
   display: flex;
@@ -72,6 +73,7 @@ const Discussion = () => {
   };
   return (
     <main>
+      <Helmet title={data?.title || "Not Found"} />
       <StyledDiv>
         {data && (
           <div>

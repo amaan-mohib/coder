@@ -1,9 +1,10 @@
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import styled from "styled-components";
 import Button from "../components/Button";
 import LinkComp from "../components/Link";
 import { useAuth } from "../contexts/AuthContext";
+import Helmet from "../HOC/Helmet";
 
 const StyledDiv = styled.div`
   margin: auto;
@@ -24,7 +25,9 @@ const StyledDiv = styled.div`
       color: var(--secondary-text);
     }
   }
-
+  button {
+    justify-content: center;
+  }
   .error {
     color: red;
     font-size: small;
@@ -41,41 +44,48 @@ const Login = () => {
   const [errors, setErrors] = useState(reset);
   const { login } = useAuth();
   const router = useRouter();
-  const { from } = router.query;
-  const { user } = useAuth();
+  // const { from } = router.query;
+  // const { user } = useAuth();
 
-  useEffect(() => {
-    if (from && user) {
-      setErrors(reset);
-      router.push(decodeURIComponent(from));
-    }
-  }, [user]);
+  // useEffect(() => {
+  //   if (from && user) {
+  //     setErrors(reset);
+  //     router.push(decodeURIComponent(from));
+  //   }
+  // }, [user]);
 
   const validate = (email, password) => {
     if (!email.trim() || !password.trim()) {
       setErrors({ ...reset, all: "All fields are required" });
       return false;
     }
-    // if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email) == false) {
-    //   setErrors({ ...reset, email: "Invalid Email" });
-    //   return false;
-    // }
+    if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email) == false) {
+      setErrors({ ...reset, email: "Invalid Email" });
+      return false;
+    }
     return true;
   };
   const onSubmit = (e) => {
     e.preventDefault();
     if (validate(email, password)) {
-      login(email, password).then((val) => {
-        if (!from && val) {
-          setErrors(reset);
-          router.push("/");
-        }
-      });
+      login(email, password)
+        .then((val) => {
+          // console.log(val);
+          if (val) {
+            setErrors(reset);
+            router.push("/");
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          setErrors({ ...reset, all: err });
+        });
     }
   };
 
   return (
     <main>
+      <Helmet title="Login" />
       <StyledDiv>
         <form onSubmit={onSubmit}>
           <input

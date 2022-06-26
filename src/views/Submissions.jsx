@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { ExternalLink, Link } from "tabler-icons-react";
 import LinkComp from "../components/Link";
+import Helmet from "../HOC/Helmet";
 import api from "../utils/api";
 
 const StyledDiv = styled.div`
@@ -67,6 +68,7 @@ const Submissions = () => {
 
   return (
     <main>
+      <Helmet title="Submissions" />
       <StyledDiv>
         <h2>All Submissions</h2>
         <div className="subs">

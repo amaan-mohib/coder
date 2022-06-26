@@ -1,304 +1,27 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import styled from "styled-components";
 import api, { judge0Api } from "../utils/api";
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import Editor from "@monaco-editor/react";
 import "react-tabs/style/react-tabs.css";
 import "react-markdown-editor-lite/lib/index.css";
 import Button from "../components/Button";
-import { problemDifficulty } from "../utils/utils";
 import LoadingScreen from "./LoadingScreen";
 import Loader from "../components/Loader";
 import { ChevronDown, Terminal2 } from "tabler-icons-react";
-import LinkComp from "../components/Link";
 import Discuss from "./Discuss";
+import { useAuth } from "../contexts/AuthContext";
+import StyledDiv from "./Problem.styles";
+import { Description, Submission } from "../components/ProblemComp";
+import Helmet from "../HOC/Helmet";
 
-const StyledDiv = styled.div`
-  display: flex;
-  height: calc(100vh - var(--nav-height));
-  overflow: hidden;
-  .title {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  .diff {
-    font-size: small;
-  }
-  .diff-0 {
-    color: green;
-  }
-  .diff-1 {
-    color: orangered;
-  }
-  .diff-2 {
-    color: red;
-  }
-  .panel {
-    padding: 10px 15px;
-  }
-  .right {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    border-left: 1px solid var(--shadow);
-  }
-  .left,
-  .right {
-    width: 100%;
-    height: 100%;
-    overflow-y: auto;
-  }
-  .editor * {
-    font-family: monospace !important;
-  }
-  .editor {
-    textarea:focus {
-      outline: none !important;
-      box-shadow: none !important;
-    }
-  }
-  .tabs {
-    font-size: 12px;
-    border-bottom: 1px solid #aaa;
-  }
-  .header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px;
-    /* border-bottom: 1px solid var(--shadow); */
-    select {
-      width: min-content;
-      font-size: 12px;
-      padding: 5px 8px;
-    }
-  }
-  .footer {
-    border-bottom: 0;
-    border-top: 1px solid var(--shadow);
-    justify-content: space-between;
-    & > div > * {
-      margin-left: 10px;
-    }
-    position: relative;
-    font-size: small;
-  }
-  .test-window {
-    position: absolute;
-    overflow: auto;
-    top: 0;
-    width: 100%;
-    right: 0;
-    transform: translateY(-101%);
-    z-index: 100;
-    background-color: var(--background);
-    min-height: 150px;
-    max-height: 200px;
-    border-top: 1px solid var(--shadow);
-    padding: 10px;
-    .test-title {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      font-size: 12px;
-      .but {
-        cursor: pointer;
-      }
-    }
-    pre {
-      display: flex;
-      flex-direction: column;
-      margin-top: 10px;
-      p {
-        font-size: 14px;
-      }
-    }
-  }
-  .time {
-    color: var(--secondary-text);
-  }
-  .custom-html-style {
-    pre {
-      padding: 10px;
-    }
-  }
-  .description {
-    display: flex;
-    flex-direction: column;
-    table {
-      width: 100%;
-      text-align: left;
-      margin-top: 10px;
-      border-collapse: collapse;
-    }
-    thead {
-      tr > th {
-        /* border-bottom: 1px solid var(--shadow); */
-        font-size: small;
-        font-weight: normal;
-        color: var(--secondary-text);
-      }
-    }
-    th,
-    td {
-      padding: 10px;
-      font-size: small;
-    }
-    table,
-    th,
-    td {
-      border: 1px solid var(--shadow);
-    }
-    tbody tr:nth-child(even) {
-      background-color: var(--nav);
-    }
-  }
-  .submission-result {
-    display: flex;
-    flex-direction: column;
-    .info {
-      font-size: small;
-      margin: 10px 0;
-    }
-    .big {
-      font-size: medium;
-      font-weight: 500;
-    }
-    pre {
-      p {
-        font-size: small;
-      }
-      display: flex;
-      flex-direction: column;
-    }
-    pre,
-    code {
-      width: 100%;
-    }
-  }
-`;
-
-const Description = ({ problem }) => {
-  return (
-    <div className="panel">
-      <div className="title">
-        <h4>{`${problem.number}. ${problem.title}`}</h4>
-        <p className={`diff diff-${problem.difficulty}`}>
-          {problemDifficulty[problem.difficulty]}
-        </p>
-      </div>
-      <hr />
-      <div
-        className="custom-html-style"
-        dangerouslySetInnerHTML={{ __html: problem.description }}></div>
-    </div>
-  );
-};
-
-const Submission = ({ submissionList, submitting, submissionResult, name }) => {
-  return (
-    <div className="panel description">
-      {submitting ? (
-        <LoadingScreen />
-      ) : (
-        submissionResult && (
-          <div className="submission-result">
-            <span style={{ margin: "10px 0" }}>
-              <span
-                style={{
-                  fontWeight: 600,
-                  color:
-                    submissionResult.status.description === "Accepted"
-                      ? "green"
-                      : "red",
-                }}>
-                {submissionResult.status.description}
-              </span>
-            </span>
-            {submissionResult.time && (
-              <span className="info">
-                {"Took "}
-                <span className="big">
-                  {submissionResult.time
-                    ? `${submissionResult.time} ms`
-                    : "N/A"}
-                </span>
-                {", with "}
-                <span className="big">
-                  {submissionResult.memory
-                    ? `${submissionResult.memory} KB`
-                    : "N/A"}
-                </span>
-                {" in "}
-                <span>{`${submissionResult.language.name}`}</span>
-                {` for ${name}`}
-              </span>
-            )}
-            <pre>
-              {submissionResult.compile_output && (
-                <code>{decodeBase64(submissionResult.compile_output)}</code>
-              )}
-              {submissionResult.message && (
-                <p>{decodeBase64(submissionResult.message)}</p>
-              )}
-              {submissionResult.stderr && (
-                <code>{decodeBase64(submissionResult.stderr)}</code>
-              )}
-            </pre>
-            <hr />
-          </div>
-        )
-      )}
-      <div>
-        {submissionList.length > 0 ? (
-          <table>
-            <thead>
-              <tr>
-                <th>Submitted At</th>
-                <th>Status</th>
-                <th>Runtime</th>
-                <th>Memory</th>
-                <th>Language</th>
-              </tr>
-            </thead>
-            <tbody>
-              {submissionList.map((sub) => (
-                <tr key={sub._id}>
-                  <td>{`${new Date(sub.timestamp).toLocaleString()}`}</td>
-                  <td>
-                    <LinkComp
-                      href={`/submissions/${sub.sub_id}`}
-                      style={{
-                        color:
-                          sub.status.description === "Accepted"
-                            ? "green"
-                            : "red",
-                      }}>
-                      {sub.status.description}
-                    </LinkComp>
-                  </td>
-                  <td>{sub.time ? `${sub.time} ms` : "N/A"}</td>
-                  <td>{sub.memory ? `${sub.memory} KB` : "N/A"}</td>
-                  <td>{sub.language.name.replace(/\([^()]*\)/g, "").trim()}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        ) : (
-          <p>No submissions till now</p>
-        )}
-      </div>
-    </div>
-  );
-};
-const encodeBase64 = (value) => Buffer.from(value).toString("base64");
-const decodeBase64 = (value) => Buffer.from(value, "base64").toString();
+export const encodeBase64 = (value) => Buffer.from(value).toString("base64");
+export const decodeBase64 = (value) => Buffer.from(value, "base64").toString();
 
 const Problem = () => {
   const router = useRouter();
   const { slug } = router.query;
+  const { user } = useAuth();
   const [problem, setProblem] = useState(null);
   const [tabIndex, setTabIndex] = useState(0);
   const [code, setCode] = useState("");
@@ -345,6 +68,16 @@ const Problem = () => {
     getSubmissionList();
   }, [slug]);
 
+  useEffect(() => {
+    let val = localStorage.getItem(`${slug}_${languageCode}`);
+    if (val) {
+      val = JSON.parse(val);
+      setCode(val);
+    } else {
+      setCode("");
+    }
+  }, [languageCode, slug]);
+
   const getSubmissionList = () => {
     api.get("submissions/" + slug).then((res) => {
       if (res.status === 200) {
@@ -357,6 +90,7 @@ const Problem = () => {
   const handleEditorChange = (val, event) => {
     // console.log(val, event);
     setCode(val);
+    localStorage.setItem(`${slug}_${languageCode}`, JSON.stringify(val));
   };
 
   const getCleanedLang = (code) => {
@@ -374,7 +108,7 @@ const Problem = () => {
   const onSubmit = (type) => {
     if (!code.trim()) return;
     const data = JSON.stringify({
-      stdin: encodeBase64(problem.testCases),
+      stdin: encodeBase64(type === 0 ? problem.example : problem.testCases),
       expected_output: encodeBase64(problem.expectedOutput),
       source_code: encodeBase64(code),
       language_id: languageCode,
@@ -435,6 +169,7 @@ const Problem = () => {
 
   return (
     <main>
+      <Helmet title={problem?.title || "Loading"} />
       {problem ? (
         <StyledDiv>
           <Tabs
@@ -549,7 +284,7 @@ const Problem = () => {
                 <Button outlined onClick={() => onSubmit(0)} disabled={running}>
                   Test Code
                 </Button>
-                <Button onClick={() => onSubmit(1)} disabled={running}>
+                <Button onClick={() => onSubmit(1)} disabled={!user || running}>
                   Submit
                 </Button>
               </div>

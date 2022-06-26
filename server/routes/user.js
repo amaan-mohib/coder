@@ -21,7 +21,7 @@ router.post("/register", async (req, res) => {
     res.status(200).send("Registration successful");
   } catch (error) {
     console.error(error);
-    res.json({ status: "error", error: "Duplicate email or username" });
+    res.status(401).send("Duplicate email or password");
   }
 });
 
@@ -35,7 +35,7 @@ router.post("/login", async (req, res) => {
     ],
   });
   if (!user) {
-    return res.status(401).send("Invalid login");
+    return res.status(401).send("Make sure you are registered");
   }
   const isPasswordValid = await bcrypt.compare(
     req.body.password,

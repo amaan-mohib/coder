@@ -33,16 +33,20 @@ const AuthProvider = ({ children }) => {
   }, []);
 
   const login = async (email, password) => {
-    const { data: token } = await api.post("user/login", { email, password });
-    if (token) {
-      console.log(token);
-      localStorage.setItem("token", token.accessToken);
-      api.defaults.headers.Authorization = `Bearer ${token.accessToken}`;
-      const { data: user } = await api.get("user/me");
-      console.log(user);
-      setUser(user);
+    try {
+      const { data: token } = await api.post("user/login", { email, password });
+      if (token) {
+        // console.log(token);
+        localStorage.setItem("token", token.accessToken);
+        api.defaults.headers.Authorization = `Bearer ${token.accessToken}`;
+        const { data: user } = await api.get("user/me");
+        // console.log(user);
+        setUser(user);
+      }
+      return Promise.resolve(token);
+    } catch (error) {
+      return Promise.reject(error.response.data);
     }
-    return Promise.resolve(token);
   };
 
   const logout = () => {

@@ -13,7 +13,7 @@ const Problem = new mongoose.Schema(
       },
     ],
     description: { type: String, required: true },
-    exampleTestCase: { type: String },
+    example: { type: String },
     testCases: { type: String },
     expectedOutput: { type: String, required: true },
     approved: { type: Boolean, default: false },

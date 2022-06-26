@@ -18,13 +18,13 @@ router.post("/submit", verifyAuth, async (req, res) => {
       difficulty: req.body.difficulty,
       tags: [{ name: "Array", slug: "array" }],
       description: req.body.description,
-      exampleTestCase: req.body.example,
+      example: req.body.example,
       testCases: req.body.testcases,
       expectedOutput: req.body.output,
     });
     res.status(200).send("submitted");
   } catch (error) {
-    res.status(500).send({ status: "error", error: "Duplicate key error" });
+    res.status(500).send("Duplicate title");
   }
 });
 
@@ -74,6 +74,21 @@ router.get("/all", getUser, async (req, res) => {
   }
 });
 
+router.get("/approved", verifyAuth, async (req, res) => {
+  if (!req.user.admin) {
+    res.status(401).send("Unauthorized access");
+    return;
+  }
+  try {
+    const problems = await Problem.find({ approved: true });
+
+    res.status(200).send(problems);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send({ status: "error", error: err });
+  }
+});
+
 router.get("/unapproved", verifyAuth, async (req, res) => {
   if (!req.user.admin) {
     res.status(401).send("Unauthorized access");
@@ -112,13 +127,43 @@ router.patch("/approve", verifyAuth, async (req, res) => {
   try {
     await Problem.updateOne(
       { _id: req.body._id },
-      { $set: { approved: true } }
+      { $set: { approved: req.body.approved } }
     );
 
     res.status(200).send("approved");
   } catch (err) {
     console.error(err);
-    res.status(500).send({ status: "error", error: err });
+    res.status(500).send(err);
+  }
+});
+
+router.patch("/edit", verifyAuth, async (req, res) => {
+  if (!req.user.admin) {
+    res.status(401).send("Unauthorized access");
+    return;
+  }
+  try {
+    await Problem.updateOne({ _id: req.body._id }, { $set: { ...req.body } });
+
+    res.status(200).send("updated");
+  } catch (err) {
+    console.error(err);
+    res.status(500).send(err);
+  }
+});
+
+router.delete("/delete", verifyAuth, async (req, res) => {
+  if (!req.user.admin) {
+    res.status(401).send("Unauthorized access");
+    return;
+  }
+  try {
+    await Problem.findByIdAndRemove(req.body._id);
+
+    res.status(200).send("deleted");
+  } catch (err) {
+    console.error(err);
+    res.status(500).send(err);
   }
 });
 

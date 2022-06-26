@@ -8,6 +8,7 @@ import MarkdownIt from "markdown-it";
 import { useEffect, useState } from "react";
 import api from "../utils/api";
 import LinkComp from "../components/Link";
+import Helmet from "../HOC/Helmet";
 
 const mdParser = new MarkdownIt();
 const MdEditor = dynamic(() => import("react-markdown-editor-lite"), {
@@ -175,6 +176,7 @@ const Discuss = ({ topic, name }) => {
 
   return (
     <main>
+      {!topic && <Helmet title="Discussions" />}
       <StyledDiv>
         <h3>{name || "General Discussions"}</h3>
         {user && (

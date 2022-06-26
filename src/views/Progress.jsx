@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import LinkComp from "../components/Link";
+import Helmet from "../HOC/Helmet";
 import api from "../utils/api";
 import { problemDifficulty } from "../utils/utils";
 
@@ -70,6 +71,7 @@ const Progress = () => {
 
   return (
     <main>
+      <Helmet title="Progress" />
       <StyledDiv>
         <h2>Progress</h2>
         <div>

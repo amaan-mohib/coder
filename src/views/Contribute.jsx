@@ -5,6 +5,7 @@ import "react-markdown-editor-lite/lib/index.css";
 import MarkdownIt from "markdown-it";
 import { useState } from "react";
 import api from "../utils/api";
+import Helmet from "../HOC/Helmet";
 
 const mdParser = new MarkdownIt();
 const MdEditor = dynamic(() => import("react-markdown-editor-lite"), {
@@ -15,7 +16,7 @@ const StyledDiv = styled.div`
   margin: 10px auto;
   display: flex;
   flex-direction: column;
-  width: 90%;
+  width: 100%;
   max-width: 800px;
   padding: 20px;
 
@@ -38,6 +39,7 @@ const StyledDiv = styled.div`
     }
     button {
       max-width: 300px;
+      justify-content: center;
     }
   }
   label {
@@ -56,13 +58,13 @@ const StyledDiv = styled.div`
     min-width: 180px;
   }
 `;
-const Contribute = () => {
-  const [title, settitle] = useState("");
-  const [difficulty, setdifficulty] = useState(0);
-  const [testcases, settestcases] = useState("");
-  const [example, setExample] = useState("");
-  const [output, setoutput] = useState("");
-  const [description, setdescription] = useState("");
+const Contribute = ({ edit, editFunc, data }) => {
+  const [title, settitle] = useState(data?.title || "");
+  const [difficulty, setdifficulty] = useState(data?.difficulty || 0);
+  const [testcases, settestcases] = useState(data?.testCases || "");
+  const [example, setExample] = useState(data?.example || "");
+  const [output, setoutput] = useState(data?.expectedOutput || "");
+  const [description, setdescription] = useState(data?.description || "");
   const [descriptionMD, setdescriptionMD] = useState("");
 
   const reset = {
@@ -95,29 +97,42 @@ const Contribute = () => {
   const onSubmit = (e) => {
     e.preventDefault();
     if (validate(title, testcases, output, description, example)) {
-      api
-        .post("problems/submit", {
+      if (edit) {
+        editFunc(data._id, {
           title,
           description,
           output,
           difficulty,
           testcases,
           example,
-        })
-        .then((res) => {
-          if (res.status === 200) {
-            alert("Your question has been sent for approval");
-            setErrors(reset);
-          } else {
-            console.error(res);
-          }
         });
+      } else {
+        api
+          .post("problems/submit", {
+            title,
+            description,
+            output,
+            difficulty,
+            testcases,
+            example,
+          })
+          .then((res) => {
+            if (res.status === 200) {
+              alert("Your question has been sent for approval");
+              setErrors(reset);
+            } else {
+              console.error(res);
+              setErrors({ ...reset, all: res.data });
+            }
+          });
+      }
     }
   };
   return (
     <main>
+      {!edit && <Helmet title="Contribute" />}
       <StyledDiv>
-        <h1>Contribute a question</h1>
+        {!edit && <h1>Contribute a question</h1>}
         <hr />
         <form onSubmit={onSubmit}>
           <label htmlFor="title">Title</label>
@@ -168,12 +183,24 @@ const Contribute = () => {
             onChange={(e) => setoutput(e.target.value)}
           />
           <label htmlFor="description">Description</label>
-          <MdEditor
-            style={{ height: "500px" }}
-            value={descriptionMD}
-            renderHTML={(text) => mdParser.render(text)}
-            onChange={handleEditorChange}
-          />
+          {edit ? (
+            <textarea
+              type="text"
+              rows={15}
+              name="desc"
+              placeholder="Description in HTML"
+              className="mono"
+              value={description}
+              onChange={(e) => setdescription(e.target.value)}
+            />
+          ) : (
+            <MdEditor
+              style={{ height: "500px" }}
+              value={descriptionMD}
+              renderHTML={(text) => mdParser.render(text)}
+              onChange={handleEditorChange}
+            />
+          )}
           {errors.all && <p className="error">{errors.all}</p>}
           <Button type="submit" className="submit">
             Submit

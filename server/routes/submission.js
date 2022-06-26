@@ -17,9 +17,7 @@ router.post("/", verifyAuth, async (req, res) => {
     res.status(201).send("Successfully submitted");
   } catch (error) {
     console.error(error);
-    res
-      .status(500)
-      .json({ status: "error", error: "Duplicate email or username" });
+    res.status(500).send(error);
   }
 });
 

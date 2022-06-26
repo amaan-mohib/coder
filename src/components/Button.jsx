@@ -60,10 +60,10 @@ const StyledButton = styled.button`
     align-items: center;
     justify-content: center;
   }
-  .right {
+  .right-icon {
     margin-right: 12px;
   }
-  .left {
+  .left-icon {
     margin-left: 12px;
   }
   .loading-icon {
@@ -83,7 +83,7 @@ const Button = ({
   return (
     <StyledButton onClick={onClick} disabled={disabled || loading} {...props}>
       {((loading && !endIcon) || startIcon) && (
-        <div className="load right">
+        <div className="load right-icon">
           {loading && !endIcon ? (
             <Loader className="loading-icon" />
           ) : (
@@ -93,7 +93,7 @@ const Button = ({
       )}
       {children}
       {((loading && !startIcon) || endIcon) && (
-        <div className="load left">
+        <div className="load left-icon">
           {loading && endIcon ? <Loader className="loading-icon" /> : endIcon}
         </div>
       )}
