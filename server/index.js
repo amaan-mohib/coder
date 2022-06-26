@@ -26,6 +26,6 @@ app.use("/comment", comment);
 app.get("/", (req, res) => {
   res.send("Server is up and running");
 });
-app.listen(process.env.PORT, () => {
+app.listen(process.env.PORT || 8080, () => {
   console.log(`Server running at http://localhost:${process.env.PORT}`);
 });
