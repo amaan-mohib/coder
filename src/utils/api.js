@@ -2,7 +2,7 @@ import Axios from "axios";
 
 export let urls = {
   development: "http://localhost:8080/",
-  production: "",
+  production: "https://delta-coder.herokuapp.com/",
 };
 
 const api = Axios.create({

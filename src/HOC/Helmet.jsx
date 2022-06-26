@@ -4,7 +4,7 @@ import { appName, webUrl } from "../utils/utils";
 
 const Helmet = ({ description = "", title = "", route = "" }) => {
   description =
-    description || "Create and share stories with a team or individually.";
+    description || "Practice and expand your knowledge of coding skills.";
   title = title ? `${title} | ${appName}` : appName;
   let url = route ? `${webUrl}${route}` : webUrl;
   return (
@@ -52,7 +52,12 @@ const Helmet = ({ description = "", title = "", route = "" }) => {
         href={webUrl + "/android-chrome-192x192.png"}
         key="touch-icon"
       />
-      <link rel="manifest" href={webUrl + "/manifest.json"} key="manifest" />
+      <link
+        rel="manifest"
+        href={webUrl + "/manifest.json"}
+        key="manifest"
+        crossorigin="use-credentials"
+      />
     </Head>
   );
 };
