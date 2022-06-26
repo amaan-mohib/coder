@@ -79,6 +79,7 @@ const Problem = () => {
   }, [languageCode, slug]);
 
   const getSubmissionList = () => {
+    if (!user) return;
     api.get("submissions/" + slug).then((res) => {
       if (res.status === 200) {
         setSubmissionList(res.data);

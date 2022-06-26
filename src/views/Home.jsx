@@ -106,7 +106,7 @@ const Home = () => {
               {problems.map((problem) => (
                 <div key={problem._id} className="problem">
                   <div className="stat">
-                    {statusIcon[user ? problem.status : "loading"]}
+                    {statusIcon[user ? problem.status || "loading" : "loading"]}
                   </div>
                   <div className="info">
                     <LinkComp
