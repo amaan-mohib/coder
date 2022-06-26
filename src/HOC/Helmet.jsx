@@ -24,7 +24,7 @@ const Helmet = ({ description = "", title = "", route = "" }) => {
       <meta property="og:url" content={url} key="og:url" />
       <meta
         property="og:image"
-        content={webUrl + "/apple-touch-icon.png"}
+        content={webUrl + "apple-touch-icon.png"}
         key="og:image"
       />
       <meta property="og:image:width" content="180" />
@@ -49,15 +49,15 @@ const Helmet = ({ description = "", title = "", route = "" }) => {
       />
       <link
         rel="apple-touch-icon"
-        href={webUrl + "/android-chrome-192x192.png"}
+        href={webUrl + "android-chrome-192x192.png"}
         key="touch-icon"
       />
-      <link
+      {/* <link
         rel="manifest"
-        href={webUrl + "/manifest.json"}
+        href={webUrl + "manifest.json"}
         key="manifest"
         crossorigin="use-credentials"
-      />
+      /> */}
     </Head>
   );
 };
