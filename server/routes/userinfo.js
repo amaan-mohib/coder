@@ -38,7 +38,7 @@ router.get("/solved", verifyAuth, async (req, res) => {
     const medium = problems[1]?.count || 0;
     const hard = problems[2]?.count || 0;
 
-    const total = await Problem.countDocuments();
+    const total = await Problem.countDocuments({ approved: true });
 
     res.status(200).send({
       all: submissions.length,

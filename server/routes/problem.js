@@ -152,13 +152,14 @@ router.patch("/edit", verifyAuth, async (req, res) => {
   }
 });
 
-router.delete("/delete", verifyAuth, async (req, res) => {
+router.delete("/delete/:id", verifyAuth, async (req, res) => {
   if (!req.user.admin) {
     res.status(401).send("Unauthorized access");
     return;
   }
   try {
-    await Problem.findByIdAndRemove(req.body._id);
+    // console.log(req.body);
+    await Problem.findByIdAndRemove(req.params.id);
 
     res.status(200).send("deleted");
   } catch (err) {

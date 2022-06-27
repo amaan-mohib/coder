@@ -48,6 +48,12 @@ const ListItem = styled.div`
       margin-left: 10px;
     }
   }
+  .cancel {
+    margin-left: auto;
+    margin-top: 10px;
+    margin-bottom: -20px;
+    margin-right: 35px;
+  }
 `;
 
 const AccordionList = ({ list, getList, approval }) => {
@@ -73,7 +79,7 @@ const AccordionList = ({ list, getList, approval }) => {
   };
   const del = (id) => {
     if (!confirm("Do you to delete the record?")) return;
-    api.delete("problems/delete", { _id: id }).then((res) => {
+    api.delete("problems/delete/" + id).then((res) => {
       if (res.status === 200) {
         setSelected(null);
         getList();
@@ -105,7 +111,9 @@ const AccordionList = ({ list, getList, approval }) => {
       {selected === item._id &&
         (formstate ? (
           <div>
-            <Button onClick={() => setForm(false)}>Cancel</Button>
+            <Button onClick={() => setForm(false)} className="cancel" outlined>
+              Cancel
+            </Button>
             <Contribute edit data={item} editFunc={edit} />
           </div>
         ) : (

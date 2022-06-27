@@ -10,19 +10,22 @@ const StyledButton = styled.button`
   color: white;
   text-transform: capitalize;
   display: flex;
+  transition-duration: 0.4s;
+  text-decoration:none !important;
 
   &:hover {
-    filter: brightness(90%) saturate(120%);
+    background-color: var(--hover);
   }
   &:active {
-    filter: brightness(80%) saturate(120%);
+    background-color: var(--active);
   }
   &:disabled{
      background-color: var(--secondary);
+     color:var(--secondary-text);
      cursor: not-allowed;
   }
   &:disabled:hover{
-    filter:none;
+    background-color: var(--secondary);
   }
   ${(props) =>
     props.secondary &&
@@ -39,6 +42,10 @@ const StyledButton = styled.button`
       background-color: transparent;
       padding: 5px 15px;
       color: black;
+      &:hover {
+        background-color: transparent;
+        outline: black solid 1px;
+      }
       &:disabled {
         background-color: transparent;
         color: var(--secondary-text);

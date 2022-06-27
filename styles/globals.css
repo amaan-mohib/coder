@@ -2,6 +2,8 @@
 :root {
   --background: #fff;
   --primary: #000;
+  --hover: rgb(22, 22, 22);
+  --active: rgb(33, 33, 33);
   --secondary: #373737;
   --nav: #f2f2f2;
   --shadow: rgba(170, 170, 170, 0.7);
@@ -25,6 +27,7 @@ body {
 a {
   color: inherit;
   text-decoration: none;
+  transition-duration: 0.4s;
 }
 a:hover {
   text-decoration: underline;

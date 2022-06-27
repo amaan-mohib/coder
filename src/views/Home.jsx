@@ -17,6 +17,7 @@ const StyledDiv = styled.div`
   .pane1 {
     flex: 1;
     margin-right: 20px;
+    width: 100%;
   }
   & > div {
     flex-direction: column;
@@ -43,7 +44,7 @@ const StyledDiv = styled.div`
     display: flex;
     flex-direction: column;
     margin-top: 10px;
-
+    width: 100%;
     .problem:nth-child(even) {
       background-color: var(--nav);
     }
@@ -52,15 +53,17 @@ const StyledDiv = styled.div`
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 10px;
+    padding: 10px 0;
     border-radius: 5px;
+    width: 100%;
     & > * {
-      padding: 0 10px;
+      margin: 0 10px;
     }
     .stat {
       display: flex;
       align-items: center;
       justify-content: center;
+      margin-left: 0;
     }
     .title {
       font-weight: 600;
@@ -80,6 +83,13 @@ const StyledDiv = styled.div`
     }
     .end {
       margin-left: auto;
+      margin-right: 0;
+    }
+  }
+  @media only screen and (max-width: 600px) {
+    flex-direction: column-reverse;
+    & > div {
+      margin-bottom: 10px;
     }
   }
 `;
@@ -100,7 +110,7 @@ const Home = () => {
     <main>
       <StyledDiv>
         <div className="pane1">
-          <h1>Problems</h1>
+          <h2>Problems</h2>
           {problems.length > 0 ? (
             <div className="problems">
               {problems.map((problem) => (
