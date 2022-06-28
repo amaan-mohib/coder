@@ -105,7 +105,8 @@ const Home = () => {
         setProblems(res.data);
       }
     });
-  }, []);
+  }, [user]);
+
   return (
     <main>
       <StyledDiv>
