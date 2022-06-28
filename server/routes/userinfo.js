@@ -31,7 +31,7 @@ router.get("/solved", verifyAuth, async (req, res) => {
         },
       },
       {
-        $sort: { count: 1 },
+        $sort: { _id: 1 },
       },
     ]);
     const easy = problems[0]?.count || 0;
