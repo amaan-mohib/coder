@@ -45,7 +45,6 @@ const StyledDiv = styled.div`
     flex-direction: column;
     margin-top: 10px;
     width: 100%;
-    padding: 0 10px;
     .problem:nth-child(even) {
       background-color: var(--nav);
     }
@@ -57,6 +56,7 @@ const StyledDiv = styled.div`
     padding: 10px 0;
     border-radius: 5px;
     width: 100%;
+    padding: 0 10px;
     & > * {
       margin: 0 10px;
     }
