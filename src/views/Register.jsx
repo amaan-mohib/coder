@@ -56,6 +56,13 @@ const Register = () => {
       setErrors({ ...reset, all: "All fields are required" });
       return false;
     }
+    if (password.trim().length < 6) {
+      setErrors({
+        ...reset,
+        password: "Password length should be greater than 6",
+      });
+      return false;
+    }
     if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email) == false) {
       setErrors({ ...reset, email: "Invalid Email" });
       return false;
