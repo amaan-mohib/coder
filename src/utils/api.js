@@ -2,7 +2,8 @@ import Axios from "axios";
 
 export let urls = {
   development: "http://localhost:8080/",
-  production: "https://delta-coder.herokuapp.com/",
+  // production: "https://delta-coder.herokuapp.com/",
+  production: "https://coder-ue6y.onrender.com/",
 };
 
 const api = Axios.create({
